@@ -1,0 +1,77 @@
+#Ex:Database
+
+
+# Create database
+CREATE DATABASE store;
+
+# Create table countries
+CREATE TABLE countries (
+    code INT PRIMARY KEY,
+    name VARCHAR(20) NOT NULL UNIQUE,
+    continent_name VARCHAR(20) NOT NULL
+);
+
+# Create table users
+CREATE TABLE user (
+    id INT PRIMARY KEY,
+    full_name VARCHAR(20) NOT NULL,
+    email VARCHAR(20) NOT NULL UNIQUE,
+    gender CHAR(1) NOT NULL CHECK (gender IN ('m', 'f')),
+    date_of_birth VARCHAR(15) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    country_code INT,
+    FOREIGN KEY (country_code) REFERENCES countries(code)
+);
+
+# Create table orders
+CREATE TABLE orders (
+    id INT PRIMARY KEY,
+    status VARCHAR(6) NOT NULL CHECK (status IN ('start', 'finish')),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES user(id)
+);
+
+# Create table order_products
+CREATE TABLE order_products (
+    quantity INT NOT NULL DEFAULT 0,
+    order_id INT,
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    product_id INT,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+# Create table products
+CREATE TABLE products (
+    id INT PRIMARY KEY,
+    name VARCHAR(10) NOT NULL,
+    price INT NOT NULL DEFAULT 0,
+    status VARCHAR(10) NOT NULL CHECK (status IN ('valid', 'expired')),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+# Add new row to the countries table
+INSERT INTO countries (code, name, continent_name) VALUES (1, 'Saudi Arabia', 'UAE');
+
+# Add new row to the users table
+INSERT INTO user VALUES (1, 'fahad almuslam', 'fahad@gmail.com', 'm', '2000-01-01', NOW(), 1);
+
+# Add new row to the orders table
+INSERT INTO orders VALUES (1, 'start', NOW(), 1);
+
+# Add new row to the products table
+INSERT INTO products (id, name, price, status, created_at)
+VALUES (1, 'Laptop', 1500, 'valid', NOW());
+
+# Add new row to the order_products table
+INSERT INTO order_products VALUES (2, 1, 1);
+
+# Update row from countries table
+UPDATE countries
+SET name = 'KSA'
+WHERE code = 1;
+
+# Delete row from products table
+DELETE FROM products
+WHERE id = 1;
+
